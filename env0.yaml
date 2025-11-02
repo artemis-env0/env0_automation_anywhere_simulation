@@ -9,9 +9,8 @@ deploy:
           set -euo pipefail
           echo "== SA-key auth path =="
 
-          # Verify SA key is present from env0 integration
           if [[ -z "${GOOGLE_APPLICATION_CREDENTIALS:-}" ]]; then
-            echo "ERROR: GOOGLE_APPLICATION_CREDENTIALS not set. Attach your SA key to this Environment or inherit the Project credential." >&2
+            echo "ERROR: GOOGLE_APPLICATION_CREDENTIALS not set. Attach your SA key to this Environment or ensure it inherits the Project credential." >&2
             exit 1
           fi
           if [[ ! -s "${GOOGLE_APPLICATION_CREDENTIALS}" ]]; then
@@ -20,15 +19,13 @@ deploy:
           fi
           echo "Using SA key: ${GOOGLE_APPLICATION_CREDENTIALS}"
 
-          # Extract SA email without jq
-          SA_EMAIL="$(grep -oE '"client_email"\s*:\s*"[^"]+"' "${GOOGLE_APPLICATION_CREDENTIALS}" | head -n1 | sed -E 's/.*"client_email"\s*:\s*"([^"]+)".*/\1/')"
+          SA_EMAIL="$(grep -oE '"client_email"\\s*:\\s*"[^"]+"' "${GOOGLE_APPLICATION_CREDENTIALS}" | head -n1 | sed -E 's/.*"client_email"\\s*:\\s*"([^"]+)".*/\1/')"
           if [[ -z "${SA_EMAIL:-}" ]]; then
             echo "ERROR: Could not read client_email from SA key JSON." >&2
             exit 1
           fi
           echo "Service Account email: ${SA_EMAIL}"
 
-          # Activate & set as active account
           gcloud auth activate-service-account "${SA_EMAIL}" --key-file="${GOOGLE_APPLICATION_CREDENTIALS}" --quiet
           gcloud config set account "${SA_EMAIL}" --quiet
 
@@ -36,12 +33,10 @@ deploy:
           gcloud auth list
           echo "Active account: $(gcloud config get-value account 2>/dev/null || echo unset)"
 
-          # Set project if provided
           if [[ -n "${GOOGLE_PROJECT:-}" ]]; then
             gcloud config set project "${GOOGLE_PROJECT}" --quiet
           fi
 
-          # Optional: fetch kubeconfig if you want to exercise kubectl
           if [[ -n "${GKE_CLUSTER:-}" ]]; then
             export USE_GKE_GCLOUD_AUTH_PLUGIN="${USE_GKE_GCLOUD_AUTH_PLUGIN:-True}"
             if [[ -n "${GKE_ZONE:-}" ]]; then
