@@ -1,4 +1,10 @@
-# env0.yaml
+# env0.yaml | artem@env0 - GKE Test Trigger Pipeline Validator
+# Purpose: Safely validate GCP/GKE connectivity inside env0.
+# - Authenticates using either a mounted credential file (WIF or SA key)
+#   OR GOOGLE_APPLICATION_CREDENTIALS provided by an attached GCP credential.
+# - Optionally fetches kubeconfig for a target GKE cluster (regional OR zonal).
+# - Runs read-only kubectl smoke checks (no mutations).
+# - Destroy stage is also non-destructive (server-side dry-run only), guarded by VALIDATE_ONLY.
 # Safe GCP/GKE connectivity validation (no mutations)
 
 version: 2
