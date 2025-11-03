@@ -5,7 +5,7 @@
 # - Optionally fetches kubeconfig for a target GKE cluster (regional OR zonal).
 # - Runs read-only kubectl smoke checks (no mutations).
 # - Destroy stage is also non-destructive (server-side dry-run only), guarded by VALIDATE_ONLY.
-# env0.yaml — Safe GCP/GKE connectivity validation (no mutations)
+# - Safe GCP/GKE connectivity validation (no mutations)
 
 version: 2
 shell: bash
