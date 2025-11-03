@@ -3,5 +3,5 @@ terraform {
 }
 
 output "hello" {
-  value = "From env0 gke Connectivity Test 🐍 If you see this that means you're connected to Google Public Cloud and Test was Successful"
+  value = "From env0 gke Connectivity Test 🚀 If you see this that means you're connected to Google Public Cloud and Test was Successful"
 }
